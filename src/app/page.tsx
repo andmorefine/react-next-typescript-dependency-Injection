@@ -1,30 +1,21 @@
 'use client'
 
 import { FC, useState } from 'react'
+import { useDependencies } from '@/dependenciesContext'
 
 const LoginPage: FC = () => {
+  const { authService } = useDependencies()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleLogin = () => {
-    fetch('https://api.example.com/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('ログイン 失敗')
-        }
-        const user = response.json()
-        console.log('ログイン 成功! ユーザー:', user)
-      })
-      .catch((error) => {
-        console.error('ログイン エラー:', error)
-        throw error
-      })
+  const handleLogin = async () => {
+    try {
+      const user = await authService.login(email, password)
+      console.log('ログイン 成功! ユーザー:', user)
+    } catch (error) {
+      console.error('ログイン エラー:', error)
+    }
   }
 
   return (
